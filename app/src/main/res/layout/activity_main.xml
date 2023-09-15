@@ -11,7 +11,20 @@
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:orientation="horizontal"
-        android:weightSum="3">
+        android:weightSum="4">
+        <TextView
+            android:background="#E11F35"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center|left"
+            android:layout_weight="1"
+            android:paddingStart="8dp"
+            android:text="DATE"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
         <TextView
             android:background="#9C27B0"
             android:layout_width="match_parent"

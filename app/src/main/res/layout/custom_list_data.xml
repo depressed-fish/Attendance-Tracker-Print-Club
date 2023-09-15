@@ -3,7 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="55dp"
     android:orientation="horizontal"
-    android:weightSum="3">
+    android:weightSum="4">
+
+    <TextView
+        android:id="@+id/tv_lv_date"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:paddingStart="5dp"
+        android:text="date"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_lv_ID"

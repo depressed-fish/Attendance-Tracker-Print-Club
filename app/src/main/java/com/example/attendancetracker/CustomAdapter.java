@@ -14,12 +14,14 @@ public class CustomAdapter extends BaseAdapter {
     Context context;
     LayoutInflater inflater;
 
+    ArrayList<String> listDate;
     ArrayList<String> listID;
     ArrayList<String> listName;
     ArrayList<String> listCGPA;
 
-    public CustomAdapter(Context context, ArrayList<String> listID, ArrayList<String> listName, ArrayList<String> listCGPA) {
+    public CustomAdapter(Context context, ArrayList<String> listDate, ArrayList<String> listID, ArrayList<String> listName, ArrayList<String> listCGPA) {
         this.context = context;
+        this.listDate = listDate;
         this.listID = listID;
         this.listName = listName;
         this.listCGPA = listCGPA;
@@ -46,10 +48,12 @@ public class CustomAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
 
         view = inflater.inflate(R.layout.custom_list_data, null);
+        TextView tvDate = view.findViewById(R.id.tv_lv_date);
         TextView tvID = view.findViewById(R.id.tv_lv_ID);
         TextView tvName = view.findViewById(R.id.tv_lv_name);
         TextView tvCGPA = view.findViewById(R.id.tv_lv_cgpa);
 
+        tvDate.setText(listDate.get(i));
         tvID.setText(listID.get(i));
         tvName.setText(listName.get(i));
         tvCGPA.setText(listCGPA.get(i));
