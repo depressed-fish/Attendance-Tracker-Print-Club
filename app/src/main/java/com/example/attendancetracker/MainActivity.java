@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getData() {
-        String urls = "https://sheets.googleapis.com/v4/spreadsheets/"+sheetID+"/values/sheet1?key="+apiKEY;
+        String urls = "https://sheets.googleapis.com/v4/spreadsheets/"+sheetID+"/values/Item?key="+apiKEY;
 
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
 
