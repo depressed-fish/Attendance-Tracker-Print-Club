@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -51,7 +54,54 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listView = findViewById(R.id.listview_id);
+        TextView text = (TextView) findViewById(R.id.pininput);
+
+        //Masterclass level code right here:
+        Button buttonOne = (Button) findViewById(R.id.button1);
+        Button buttonTwo = (Button) findViewById(R.id.button2);
+        Button buttonThree = (Button) findViewById(R.id.button3);
+        Button buttonFour = (Button) findViewById(R.id.button4);
+        Button buttonFive = (Button) findViewById(R.id.button5);
+        Button buttonSix = (Button) findViewById(R.id.button6);
+        Button buttonSeven = (Button) findViewById(R.id.button7);
+        Button buttonEight = (Button) findViewById(R.id.button8);
+        Button buttonNine = (Button) findViewById(R.id.button9);
+        Button buttonDelete = (Button) findViewById(R.id.buttondelete);
+        Button buttonZero = (Button) findViewById(R.id.button0);
+        Button buttonEnter = (Button) findViewById(R.id.buttonenter);
+
+        Button[] pin = new Button[] {buttonZero, buttonOne, buttonTwo, buttonThree, buttonFour, buttonFive, buttonSix, buttonSeven, buttonEight, buttonNine};
+
+        for (int i = 0; i < pin.length; i++) {
+            Button button = pin[i];
+            int num = i;
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    String newText = text.getText().toString() + "" + num;
+                    text.setText(newText);
+                }
+            });
+        }
+
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String oldText = text.getText().toString();
+                try {
+                    String newText = oldText.toString().substring(0, oldText.length() - 1);
+
+                    text.setText(newText);
+                } catch (Exception e) {
+
+                }
+            }
+        });
+
+        buttonEnter.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
+
 
         getData();
         addItemToSheet();
@@ -101,9 +151,11 @@ public class MainActivity extends AppCompatActivity {
     private void addItemToSheet() {
 
         final ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "Adding Item", "Please Wait...");
-        final String id = "3";
-        final String name = "Grant";
+        final String ID = "3";
+        final String NAME = "Grant";
         final String CGPA = "3.5";
+
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://script.google.com/macros/s/AKfycbwV5sG6ndUKIdkrRTheNdXV40G9BC-Z-r5gd94s7AuYOa45nTowaBRC8e1KnOLSOZUqqA/exec", new Response.Listener<String>() {
             @Override
@@ -124,9 +176,8 @@ public class MainActivity extends AppCompatActivity {
 
                 Map<String, String> params = new HashMap<>();
 
-                params.put("action", "addItem");
-                params.put("ID", id);
-                params.put("NAME", name);
+                params.put("ID", ID);
+                params.put("NAME", NAME);
                 params.put("CGPA", CGPA);
 
                 return params;
@@ -137,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
         RetryPolicy retryPolicy = new DefaultRetryPolicy(timeOut, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         stringRequest.setRetryPolicy(retryPolicy);
 
-        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         queue.add(stringRequest);
 
     }
