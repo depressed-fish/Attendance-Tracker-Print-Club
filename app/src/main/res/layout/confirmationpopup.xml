@@ -1,6 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#acacac">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/name"
+                style="@style/popuplook"
+                android:margin_left="5dp"
+                android:text="Luca Iacovelli" />
+
+            <TextView
+                android:id="@+id/studentnum"
+                style="@style/popuplook"
+                android:text="973739" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/signintime"
+                style="@style/popuplook"
+                android:text="Sign-in: 11:07am" />
+
+            <TextView
+                android:id="@+id/signouttime"
+                style="@style/popuplook"
+                android:text="Sign-out: 12:30pm" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/newtime"
+                style="@style/popuplook"
+                android:text="New Time: 1 hour 7 minutes" />
+
+            <TextView
+                android:id="@+id/totaltime"
+                style="@style/popuplook"
+                android:text="Total: 100 hours 10 minutes" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonsign"
+                style="@style/popuplook"
+                android:text="Sign " />
+
+            <Button
+                android:id="@+id/buttoncancel"
+                style="@style/popuplook"
+                android:text="Cancel" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
