@@ -261,6 +261,10 @@ public class MainActivity extends AppCompatActivity {
         DecimalFormat df=new DecimalFormat("#.##");
         double newTime = newHour + newMinute / 60;
 
+        if (newTime > 12 || newTime < 0) {
+            newTime = 0;
+        }
+
         return df.format(newTime);
     }
 
