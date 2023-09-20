@@ -29,6 +29,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.security.Signature;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -148,13 +150,18 @@ public class MainActivity extends AppCompatActivity {
 
                     boolean signedIn = Boolean.parseBoolean(listSignedIn.get(i));
                     if (signedIn) {
+                        Date d=new Date();
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
                         signIn = listRecentSignIn.get(i);
-                        signOut = Calendar.getInstance().getTime().toString();
-                        newTime = signOut;
+                        signOut = sdf.format(d);
+                        newTime = getDifference(signIn, signOut);
+                        totalTime = String.valueOf(Double.parseDouble(totalTime) + Double.parseDouble(newTime));
+
                         signButton.setText("Sign-out");
                     } else {
                         Date d=new Date();
-                        SimpleDateFormat sdf=new SimpleDateFormat("hh:mm a");
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
                         signIn = sdf.format(d);
                         signOut = "N/A";
@@ -182,10 +189,14 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
+                    final String finalTotalTime = totalTime;
+
+                    final String newHours = newTime;
                     signButton.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
                             boolean newSignIn = !signedIn;
-                            addItemToSheet(pinInput, Boolean.toString(newSignIn), signIn, signOut, newTime, totalTime);
+                            addItemToSheet(pinInput, name, Boolean.toString(newSignIn), signIn, signOut, newHours, finalTotalTime);
+                            popupWindow.dismiss();
                         }
                     });
 
@@ -201,6 +212,67 @@ public class MainActivity extends AppCompatActivity {
         if (!found) {
             Toast.makeText(MainActivity.this, "Incorrect Pin", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private String getDifference(String startTime, String endTime) {
+
+        String startHour = startTime.substring(0, 2);
+        String startMinute = startTime.substring(3);
+        String endHour = endTime.substring(0, 2);
+        String endMinute = endTime.substring(3);
+
+        int startHourNum, startMinuteNum, endHourNum, endMinuteNum;
+
+        if (startHour.substring(0, 1).trim().equals("0")) {
+            startHourNum = Integer.parseInt(startHour.substring(1));
+        } else {
+            startHourNum = Integer.parseInt(startHour.substring(0));
+        }
+
+        if (startMinute.substring(0, 1).trim().equals("0")) {
+            startMinuteNum = Integer.parseInt(startMinute.substring(1));
+        } else {
+            startMinuteNum = Integer.parseInt(startMinute.substring(0));
+        }
+
+        if (endHour.substring(0, 1).trim().equals("0")) {
+            endHourNum = Integer.parseInt(endHour.substring(1));
+        } else {
+            endHourNum = Integer.parseInt(endHour.substring(0));
+        }
+
+        if (endMinute.substring(0, 1).trim().equals("0")) {
+            endMinuteNum = Integer.parseInt(endMinute.substring(1));
+        } else {
+            endMinuteNum = Integer.parseInt(endMinute.substring(0));
+        }
+
+        double newHour = endHourNum - startHourNum;
+        double newMinute = endMinuteNum - startMinuteNum;
+
+        if (newMinute >= 60) {
+            newMinute = newMinute - 60;
+            newHour += 1;
+        } else if (newMinute < 0) {
+            newMinute = newMinute + 60;
+            newHour -= 1;
+        }
+
+        DecimalFormat df=new DecimalFormat("#.##");
+        double newTime = newHour + newMinute / 60;
+
+        return df.format(newTime);
+    }
+
+    private double getHour(String time) {
+
+        String hour = time.substring(0, 2);
+        String minutes = time.substring(3);
+
+        DecimalFormat df=new DecimalFormat("#.##");
+        double hourTime = Double.parseDouble(hour) + Double.parseDouble(minutes) / 60;
+
+        return Double.parseDouble(df.format(hourTime));
     }
 
     private void getData(View v, String pinInput) {
@@ -256,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
         queue.add(jsonObjectRequest);
     }
 
-    private void addItemToSheet(String id, String newSignIn, String signInTime, String signOutTime, String recentHours, String newTime) {
+    private void addItemToSheet(String id, String studentName, String newSignIn, String signInTime, String signOutTime, String recentHours, String newTime) {
 
         final String ACTION = Boolean.parseBoolean(newSignIn) ? "SIGNIN" : "SIGNOUT";
 
@@ -264,6 +336,7 @@ public class MainActivity extends AppCompatActivity {
 
         final ProgressDialog dialog = ProgressDialog.show(MainActivity.this, titleString, "Please Wait...");
         final String ID = id;
+        final String STUDENTNAME = studentName;
         final String SIGNINTIME = signInTime;
         final String SIGNOUTTIME = signOutTime;
         final String RECENTHOURS = recentHours;
@@ -292,6 +365,7 @@ public class MainActivity extends AppCompatActivity {
 
                 params.put("ACTION", ACTION);
                 params.put("ID", ID);
+                params.put("STUDENTNAME", STUDENTNAME);
                 params.put("SIGNINTIME", SIGNINTIME);
                 params.put("SIGNOUTTIME", SIGNOUTTIME);
                 params.put("RECENTHOURS", RECENTHOURS);
