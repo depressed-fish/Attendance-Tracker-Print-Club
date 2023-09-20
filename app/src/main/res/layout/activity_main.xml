@@ -97,7 +97,7 @@
                 android:id="@+id/buttondelete"
                 style="@style/btnlook"
                 android:textColor="@color/red"
-                android:textSize="54dp"
+                android:textSize="30dp"
                 android:text="Delete"/>
 
             <Button
@@ -108,7 +108,7 @@
             <Button
                 android:id="@+id/buttonenter"
                 style="@style/btnlook"
-                android:textSize="54dp"
+                android:textSize="30dp"
                 android:textColor="@color/green"
                 android:text="Enter" />
         </LinearLayout>
