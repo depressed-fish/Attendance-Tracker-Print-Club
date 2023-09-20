@@ -1,8 +1,5 @@
 package com.example.attendancetracker;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -14,6 +11,9 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -27,8 +27,12 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -38,20 +42,18 @@ public class MainActivity extends AppCompatActivity {
     String sheetID = "1fv8KHlvuJu0o_sx26L14YP8rsz0QdQuBOAVB4Ti61LM";
     String apiKEY = "AIzaSyA1oGHZE1EK9giZLMnKdsnNFHYqnEkA1Cs";
 
-    String strDate;
-    String strID;
-    String strName;
-    String strCGPA;
-
+    String strStudentNumber;
+    String strStudentName;
+    String strSignedIn;
+    String strRecentSignIn;
+    String strTotalTime;
     JSONArray jsonArray;
-    ListView listView;
 
-    CustomAdapter customAdapter;
-
-    ArrayList<String> listDate = new ArrayList<String>();
-    ArrayList<String> listID = new ArrayList<String>();
-    ArrayList<String> listNAME = new ArrayList<String>();
-    ArrayList<String> listCGPA = new ArrayList<String>();
+    ArrayList<String> listStudentNumbers = new ArrayList<String>();
+    ArrayList<String> listStudentName = new ArrayList<String>();
+    ArrayList<String> listSignedIn = new ArrayList<String>();
+    ArrayList<String> listRecentSignIn = new ArrayList<String>();
+    ArrayList<String> listTotalTime = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonZero = (Button) findViewById(R.id.button0);
         Button buttonEnter = (Button) findViewById(R.id.buttonenter);
 
-        Button[] pin = new Button[] {buttonZero, buttonOne, buttonTwo, buttonThree, buttonFour, buttonFive, buttonSix, buttonSeven, buttonEight, buttonNine};
+        Button[] pin = new Button[]{buttonZero, buttonOne, buttonTwo, buttonThree, buttonFour, buttonFive, buttonSix, buttonSeven, buttonEight, buttonNine};
 
         for (int i = 0; i < pin.length; i++) {
             Button button = pin[i];
@@ -102,19 +104,9 @@ public class MainActivity extends AppCompatActivity {
 
         buttonEnter.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LayoutInflater inflater = (LayoutInflater)
-                        getSystemService(LAYOUT_INFLATER_SERVICE);
-                View popupView = inflater.inflate(R.layout.confirmationpopup, null);
-
-                // create the popup window
-                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                boolean focusable = true; // lets taps outside the popup also dismiss it
-                final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-                popupWindow.setElevation(20);
-                // show the popup window
-                // which view you pass in doesn't matter, it is only used for the window tolken
-                popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+                String pinInput = text.getText().toString();
+                getData(v, pinInput);
+                text.setText("");
             }
         });
 
@@ -123,53 +115,159 @@ public class MainActivity extends AppCompatActivity {
         //addItemToSheet();
     }
 
-    private void getData() {
-        String urls = "https://sheets.googleapis.com/v4/spreadsheets/"+sheetID+"/values/Item?key="+apiKEY;
+    private void continueEnter(View v, String pinInput) {
+
+        boolean found = false;
+
+            for (int i = 0; i < listStudentNumbers.size(); i++) {
+
+                String checkpin = listStudentNumbers.get(i).trim();
+
+                if (pinInput.trim().equals(checkpin)) {
+
+                    LayoutInflater inflater = (LayoutInflater)
+                            getSystemService(LAYOUT_INFLATER_SERVICE);
+                    View popupView = inflater.inflate(R.layout.confirmationpopup, null);
+
+                    // create the popup window
+                    int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    boolean focusable = true; // lets taps outside the popup also dismiss it
+                    final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+                    popupWindow.setElevation(20);
+                    // show the popup window
+                    popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+
+                    String name, signIn, signOut, newTime, totalTime;
+
+                    name = listStudentName.get(i);
+                    totalTime = listTotalTime.get(i);
+
+                    Button cancelButton = (Button) popupView.findViewById(R.id.buttoncancel);
+                    Button signButton = (Button) popupView.findViewById(R.id.buttonsign);
+
+                    boolean signedIn = Boolean.parseBoolean(listSignedIn.get(i));
+                    if (signedIn) {
+                        signIn = listRecentSignIn.get(i);
+                        signOut = Calendar.getInstance().getTime().toString();
+                        newTime = signOut;
+                        signButton.setText("Sign-out");
+                    } else {
+                        Date d=new Date();
+                        SimpleDateFormat sdf=new SimpleDateFormat("hh:mm a");
+
+                        signIn = sdf.format(d);
+                        signOut = "N/A";
+                        newTime = "N/A";
+                        signButton.setText("Sign-in");
+                    }
+
+                    TextView nameText = (TextView) popupView.findViewById(R.id.name);
+                    TextView idText = (TextView) popupView.findViewById(R.id.studentnum);
+                    TextView signInText = (TextView) popupView.findViewById(R.id.signintime);
+                    TextView signOutText = (TextView) popupView.findViewById(R.id.signouttime);
+                    TextView newTimeText = (TextView) popupView.findViewById(R.id.newtime);
+                    TextView totalTimeText = (TextView) popupView.findViewById(R.id.totaltime);
+
+                    nameText.setText(name);
+                    idText.setText(pinInput);
+                    signInText.setText("Sign-in:\n" + signIn);
+                    signOutText.setText("Sign-out:\n" + signOut);
+                    newTimeText.setText("New Time:\n" + newTime);
+                    totalTimeText.setText("Total:\n" + totalTime);
+
+                    cancelButton.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            popupWindow.dismiss();
+                        }
+                    });
+
+                    signButton.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            boolean newSignIn = !signedIn;
+                            addItemToSheet(pinInput, Boolean.toString(newSignIn), signIn, signOut, newTime, totalTime);
+                        }
+                    });
+
+                    found = true;
+                }
+
+                if (found) {
+                    break;
+                }
+            }
+
+
+        if (!found) {
+            Toast.makeText(MainActivity.this, "Incorrect Pin", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void getData(View v, String pinInput) {
+        String urls = "https://sheets.googleapis.com/v4/spreadsheets/" + sheetID + "/values/Item?key=" + apiKEY;
 
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+
+        listStudentNumbers = new ArrayList<String>();
+        listStudentName = new ArrayList<String>();
+        listSignedIn = new ArrayList<String>();
+        listRecentSignIn = new ArrayList<String>();
+        listTotalTime = new ArrayList<String>();
+
+        final ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "Getting Data", "Please Wait...");
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, urls, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     jsonArray = response.getJSONArray("values");
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
 
-                IntStream.range(1, jsonArray.length()).forEach(i-> {
+                IntStream.range(1, jsonArray.length()).forEach(i -> {
                     try {
                         JSONArray json = jsonArray.getJSONArray(i);
-                        strDate = json.getString(0);
-                        strID = json.getString(1);
-                        strName = json.getString(2);
-                        strCGPA = json.getString(3);
+                        strStudentNumber = json.getString(0);
+                        strStudentName = json.getString(1);
+                        strSignedIn = json.getString(2);
+                        strRecentSignIn = json.getString(3);
+                        strTotalTime = json.getString(6);
 
-                        listDate.add(strDate);
-                        listID.add(strID);
-                        listNAME.add(strName);
-                        listCGPA.add(strCGPA);
+                        listStudentNumbers.add(strStudentNumber);
+                        listStudentName.add(strStudentName);
+                        listSignedIn.add(strSignedIn);
+                        listRecentSignIn.add(strRecentSignIn);
+                        listTotalTime.add(strTotalTime);
 
-                        customAdapter = new CustomAdapter(getApplicationContext(), listDate, listID, listNAME, listCGPA);
-                        listView.setAdapter(customAdapter);
+                    } catch (Exception e) {
+                    }
+                    dialog.dismiss();
 
-                    } catch (Exception e) {}
+                    continueEnter(v, pinInput);
                 });
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                dialog.dismiss();
             }
         });
 
         queue.add(jsonObjectRequest);
     }
 
-    private void addItemToSheet() {
+    private void addItemToSheet(String id, String newSignIn, String signInTime, String signOutTime, String recentHours, String newTime) {
 
-        final ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "Adding Item", "Please Wait...");
-        final String ID = "3";
-        final String NAME = "Grant";
-        final String CGPA = "3.5";
+        final String ACTION = Boolean.parseBoolean(newSignIn) ? "SIGNIN" : "SIGNOUT";
+
+        String titleString = Boolean.parseBoolean(newSignIn) ? "Signing In" : "Signing Out";
+
+        final ProgressDialog dialog = ProgressDialog.show(MainActivity.this, titleString, "Please Wait...");
+        final String ID = id;
+        final String SIGNINTIME = signInTime;
+        final String SIGNOUTTIME = signOutTime;
+        final String RECENTHOURS = recentHours;
+        final String NEWTIME = newTime;
 
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
 
@@ -177,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 dialog.dismiss();
-                Toast.makeText(MainActivity.this, ""+response, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "" + response, Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -192,9 +290,12 @@ public class MainActivity extends AppCompatActivity {
 
                 Map<String, String> params = new HashMap<>();
 
+                params.put("ACTION", ACTION);
                 params.put("ID", ID);
-                params.put("NAME", NAME);
-                params.put("CGPA", CGPA);
+                params.put("SIGNINTIME", SIGNINTIME);
+                params.put("SIGNOUTTIME", SIGNOUTTIME);
+                params.put("RECENTHOURS", RECENTHOURS);
+                params.put("NEWTIME", NEWTIME);
 
                 return params;
             }
