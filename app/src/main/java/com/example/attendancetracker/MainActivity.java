@@ -120,8 +120,6 @@ public class MainActivity extends AppCompatActivity {
 
         boolean found = false;
 
-        System.out.println(listStudentNumbers.toString());
-
         for (int i = 0; i < listStudentNumbers.size(); i++) {
 
             String checkpin = listStudentNumbers.get(i).trim();
@@ -310,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
                         strStudentLast = json.getString(0);
                         strStudentFirst = json.getString(1);
                         strSignedIn = json.getString(3);
-                        strRecentSignIn = json.getString(3);
+                        strRecentSignIn = json.getString(4);
                         strTotalTime = json.getString(8);
 
                         listStudentNumbers.add(strStudentNumber);
