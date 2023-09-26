@@ -1,2 +1,2 @@
 # Attendance Tracker
- An Android application that tracks the time of students signed in
+ An Android application that uses the Volley Library to track the time students have been signed in/out.
