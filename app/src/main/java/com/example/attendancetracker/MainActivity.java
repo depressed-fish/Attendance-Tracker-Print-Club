@@ -37,9 +37,9 @@ import java.util.stream.IntStream;
 
 public class MainActivity extends AppCompatActivity {
 
-    String sheetID = "1fv8KHlvuJu0o_sx26L14YP8rsz0QdQuBOAVB4Ti61LM";
+    String sheetID = "1Mj3FJOVTHvFZx5uDczA0jJEGdWEP5gbWptDtE4FxJ40";
     String apiKEY = "AIzaSyA1oGHZE1EK9giZLMnKdsnNFHYqnEkA1Cs";
-    String appScriptKey = "AKfycbwV5sG6ndUKIdkrRTheNdXV40G9BC-Z-r5gd94s7AuYOa45nTowaBRC8e1KnOLSOZUqqA";
+    String appScriptKey = "AKfycbzkMJ6mq02cjyPVlktboh5mZfdY9RqSWoOF5Rt6-Hh0DdiaFWbIbKcarUxbjMCBVUR0uA";
 
     String strStudentNumber;
     String strStudentFirst;

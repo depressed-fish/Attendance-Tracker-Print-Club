@@ -19,25 +19,29 @@
             android:id="@+id/name"
             style="@style/popuplook"
             android:layout_marginLeft="5dp"
-            android:text="Luca Iacovelli" />
+            android:text="Luca Iacovelli"
+            android:autoSizeTextType="uniform"/>
 
         <TextView
             android:id="@+id/signintime"
             style="@style/popuplook"
             android:layout_marginLeft="5dp"
-            android:text="Sign-in: 11:07am" />
+            android:text="Sign-in: 11:07am"
+            android:autoSizeTextType="uniform"/>
 
         <TextView
             android:id="@+id/newtime"
             style="@style/popuplook"
             android:layout_marginLeft="5dp"
-            android:text="New Time:\n1h 7m" />
+            android:text="New Time:\n1h 7m"
+            android:autoSizeTextType="uniform"/>
 
         <Button
             android:id="@+id/buttonsign"
             style="@style/popuplook"
             android:layout_marginLeft="5dp"
-            android:text="Sign" />
+            android:text="Sign"
+            android:autoSizeTextType="uniform"/>
     </LinearLayout>
 
     <LinearLayout
@@ -50,24 +54,28 @@
             android:id="@+id/studentnum"
             style="@style/popuplook"
             android:layout_marginRight="5dp"
-            android:text="973739" />
+            android:text="973739"
+            android:autoSizeTextType="uniform"/>
 
         <TextView
             android:id="@+id/signouttime"
             style="@style/popuplook"
             android:layout_marginRight="5dp"
-            android:text="Sign-out: 12:30pm" />
+            android:text="Sign-out: 12:30pm"
+            android:autoSizeTextType="uniform"/>
 
         <TextView
             android:id="@+id/totaltime"
             style="@style/popuplook"
             android:layout_marginRight="5dp"
-            android:text="Total:\n100h 15m" />
+            android:text="Total:\n100h 15m"
+            android:autoSizeTextType="uniform"/>
 
         <Button
             android:id="@+id/buttoncancel"
             style="@style/popuplook"
             android:layout_marginRight="5dp"
-            android:text="Cancel" />
+            android:text="Cancel"
+            android:autoSizeTextType="uniform"/>
     </LinearLayout>
 </LinearLayout>

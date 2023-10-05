@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="125dp"
+            android:autoSizeTextType="uniform"
             style="@style/btnlook"
             android:text="" />
 
@@ -30,17 +31,20 @@
             <Button
                 android:id="@+id/button1"
                 style="@style/btnlook"
-                android:text="1"/>
+                android:text="1"
+                android:autoSizeTextType="uniform"/>
 
             <Button
                 android:id="@+id/button2"
                 style="@style/btnlook"
-                android:text="2" />
+                android:text="2"
+                android:autoSizeTextType="uniform"/>
 
             <Button
                 android:id="@+id/button3"
                 style="@style/btnlook"
-                android:text="3" />
+                android:text="3"
+                android:autoSizeTextType="uniform"/>
         </LinearLayout>
 
         <LinearLayout
@@ -52,17 +56,20 @@
             <Button
                 android:id="@+id/button4"
                 style="@style/btnlook"
-                android:text="4"/>
+                android:text="4"
+                android:autoSizeTextType="uniform"/>
 
             <Button
                 android:id="@+id/button5"
                 style="@style/btnlook"
-                android:text="5" />
+                android:text="5"
+                android:autoSizeTextType="uniform"/>
 
             <Button
                 android:id="@+id/button6"
                 style="@style/btnlook"
-                android:text="6" />
+                android:text="6"
+                android:autoSizeTextType="uniform"/>
         </LinearLayout>
 
         <LinearLayout
@@ -74,17 +81,20 @@
             <Button
                 android:id="@+id/button7"
                 style="@style/btnlook"
-                android:text="7"/>
+                android:text="7"
+                android:autoSizeTextType="uniform"/>
 
             <Button
                 android:id="@+id/button8"
                 style="@style/btnlook"
-                android:text="8" />
+                android:text="8"
+                android:autoSizeTextType="uniform"/>
 
             <Button
                 android:id="@+id/button9"
                 style="@style/btnlook"
-                android:text="9" />
+                android:text="9"
+                android:autoSizeTextType="uniform"/>
         </LinearLayout>
 
         <LinearLayout
@@ -98,19 +108,22 @@
                 style="@style/btnlook"
                 android:textColor="@color/red"
                 android:textSize="30dp"
-                android:text="Delete"/>
+                android:text="Delete"
+                android:autoSizeTextType="uniform"/>
 
             <Button
                 android:id="@+id/button0"
                 style="@style/btnlook"
-                android:text="0" />
+                android:text="0"
+                android:autoSizeTextType="uniform"/>
 
             <Button
                 android:id="@+id/buttonenter"
                 style="@style/btnlook"
                 android:textSize="30dp"
                 android:textColor="@color/green"
-                android:text="Enter" />
+                android:text="Enter"
+                android:autoSizeTextType="uniform"/>
         </LinearLayout>
 
 
