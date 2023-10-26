@@ -2,6 +2,7 @@ package com.example.attendancetracker;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     String sheetID = "1Mj3FJOVTHvFZx5uDczA0jJEGdWEP5gbWptDtE4FxJ40";
     String apiKEY = "AIzaSyA1oGHZE1EK9giZLMnKdsnNFHYqnEkA1Cs";
-    String appScriptKey = "AKfycbzkMJ6mq02cjyPVlktboh5mZfdY9RqSWoOF5Rt6-Hh0DdiaFWbIbKcarUxbjMCBVUR0uA";
+    String appScriptKey = "AKfycbzZN6MQJosIcbq5kcy5KF_rDHPXbjkmGJdL33V3GEgY7Rue50EhMy_t3r4BLgIpzE6y";
 
     String strStudentNumber;
     String strStudentFirst;
@@ -119,10 +120,13 @@ public class MainActivity extends AppCompatActivity {
     private void continueEnter(View v, String pinInput) {
 
         boolean found = false;
+        boolean sameDay = false;
+        boolean stillSignedIn = false;
 
         for (int i = 0; i < listStudentNumbers.size(); i++) {
 
             String checkpin = listStudentNumbers.get(i).trim();
+
 
             if (pinInput.trim().equals(checkpin)) {
 
@@ -138,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 // show the popup window
                 popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
 
-                String name, signIn, signOut, newTime, totalPoints;
+                String name, signIn, totalPoints;
 
                 String firstName = listStudentFirst.get(i);
                 String lastName = listStudentLast.get(i);
@@ -149,28 +153,34 @@ public class MainActivity extends AppCompatActivity {
                 Button cancelButton = (Button) popupView.findViewById(R.id.buttoncancel);
                 Button signButton = (Button) popupView.findViewById(R.id.buttonsign);
 
-                boolean signedIn = Boolean.parseBoolean(listSignedIn.get(i));
+                Boolean signedIn = Boolean.parseBoolean(listSignedIn.get(i));
                 Date date = new Date();
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM.dd");
                 if (!simpleDateFormat.format(date).equals(recentSignIn)) {
                     signedIn = false;
                 } else {
+                    sameDay = true;
                     break;
                 }
 
                 if (signedIn) {
+                    stillSignedIn = true;
+                    popupWindow.dismiss();
                     break;
                 } else {
                     Date d = new Date();
                     SimpleDateFormat sdf = new SimpleDateFormat("MM.dd");
 
                     signIn = sdf.format(d);
-                    signOut = "N/A";
-                    newTime = "N/A";
                     signButton.setText("Sign-in");
 
-                    totalPoints = Double.toString(Double.parseDouble(totalPoints) + 1);
+                    try {
+                        totalPoints = Double.toString(Double.parseDouble(totalPoints) + 1);
+                    } catch (Exception e) {
+                        totalPoints = "1";
+                    }
                 }
+
 
                 TextView nameText = (TextView) popupView.findViewById(R.id.name);
                 TextView idText = (TextView) popupView.findViewById(R.id.studentnum);
@@ -181,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 idText.setText(pinInput);
                 signInText.setText("Sign-in:\n" + signIn);
                 totalPointsText.setText("Total:\n" + totalPoints);
+                Toast.makeText(MainActivity.this, "hi", Toast.LENGTH_SHORT).show();
 
                 cancelButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -207,8 +218,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        if (!found) {
-            Toast.makeText(MainActivity.this, "Incorrect Pin/", Toast.LENGTH_SHORT).show();
+        if (stillSignedIn) {
+            Toast.makeText(MainActivity.this, "Still signed in", Toast.LENGTH_SHORT).show();
+        } else if (sameDay) {
+            Toast.makeText(MainActivity.this, "Already signed in today", Toast.LENGTH_SHORT).show();
+        } else if (!found) {
+            Toast.makeText(MainActivity.this, "Incorrect Pin", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -302,12 +317,12 @@ public class MainActivity extends AppCompatActivity {
                 IntStream.range(1, jsonArray.length()).forEach(i -> {
                     try {
                         JSONArray json = jsonArray.getJSONArray(i);
-                        strStudentNumber = json.getString(2);
                         strStudentLast = json.getString(0);
                         strStudentFirst = json.getString(1);
+                        strStudentNumber = json.getString(2);
                         strSignedIn = json.getString(3);
-                        strRecentSignIn = json.getString(5);
                         strTotalPoints = json.getString(4);
+                        strRecentSignIn = json.getString(5);
 
                         listStudentNumbers.add(strStudentNumber);
                         listStudentFirst.add(strStudentFirst);
@@ -336,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addItemToSheet(String id, String studentLast, String studentFirst, String newSignIn, String recentHours, String totalPoints) {
 
-        final String ACTION = Boolean.parseBoolean(newSignIn) ? "SIGNIN" : "SIGNOUT";
+        final String ACTION = "SIGNIN";
 
         String titleString = Boolean.parseBoolean(newSignIn) ? "Signing In" : "Signing Out";
 
@@ -354,6 +369,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 dialog.dismiss();
                 Toast.makeText(MainActivity.this, "" + response, Toast.LENGTH_LONG).show();
+                Log.v("Response", response);
             }
         }, new Response.ErrorListener() {
             @Override
