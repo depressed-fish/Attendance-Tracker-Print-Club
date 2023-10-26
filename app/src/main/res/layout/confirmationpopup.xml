@@ -29,13 +29,6 @@
             android:text="Sign-in: 11:07am"
             android:autoSizeTextType="uniform"/>
 
-        <TextView
-            android:id="@+id/newtime"
-            style="@style/popuplook"
-            android:layout_marginLeft="5dp"
-            android:text="New Time:\n1h 7m"
-            android:autoSizeTextType="uniform"/>
-
         <Button
             android:id="@+id/buttonsign"
             style="@style/popuplook"
@@ -58,18 +51,11 @@
             android:autoSizeTextType="uniform"/>
 
         <TextView
-            android:id="@+id/signouttime"
+            android:id="@+id/totalpoints"
             style="@style/popuplook"
             android:layout_marginRight="5dp"
-            android:text="Sign-out: 12:30pm"
-            android:autoSizeTextType="uniform"/>
-
-        <TextView
-            android:id="@+id/totaltime"
-            style="@style/popuplook"
-            android:layout_marginRight="5dp"
-            android:text="Total:\n100h 15m"
-            android:autoSizeTextType="uniform"/>
+            android:autoSizeTextType="uniform"
+            android:text="Total Points:\n100h 15m" />
 
         <Button
             android:id="@+id/buttoncancel"

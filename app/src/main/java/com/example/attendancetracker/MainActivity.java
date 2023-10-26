@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     String strStudentLast;
     String strSignedIn;
     String strRecentSignIn;
-    String strTotalTime;
+    String strTotalPoints;
     JSONArray jsonArray;
 
     ArrayList<String> listStudentNumbers = new ArrayList<String>();
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> listStudentFirst = new ArrayList<String>();
     ArrayList<String> listSignedIn = new ArrayList<String>();
     ArrayList<String> listRecentSignIn = new ArrayList<String>();
-    ArrayList<String> listTotalTime = new ArrayList<String>();
+    ArrayList<String> listTotalPoints = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,50 +138,49 @@ public class MainActivity extends AppCompatActivity {
                 // show the popup window
                 popupWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
 
-                String name, signIn, signOut, newTime, totalTime;
+                String name, signIn, signOut, newTime, totalPoints;
 
                 String firstName = listStudentFirst.get(i);
                 String lastName = listStudentLast.get(i);
                 name = firstName + " " + lastName;
-                totalTime = listTotalTime.get(i);
+                String recentSignIn = listRecentSignIn.get(i);
+                totalPoints = listTotalPoints.get(i);
 
                 Button cancelButton = (Button) popupView.findViewById(R.id.buttoncancel);
                 Button signButton = (Button) popupView.findViewById(R.id.buttonsign);
 
                 boolean signedIn = Boolean.parseBoolean(listSignedIn.get(i));
+                Date date = new Date();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM.dd");
+                if (!simpleDateFormat.format(date).equals(recentSignIn)) {
+                    signedIn = false;
+                } else {
+                    break;
+                }
+
                 if (signedIn) {
-                    Date d = new Date();
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-
-                    signIn = listRecentSignIn.get(i);
-                    signOut = sdf.format(d);
-                    newTime = getDifference(signIn, signOut);
-                    totalTime = String.valueOf(Double.parseDouble(totalTime) + Double.parseDouble(newTime));
-
-                    signButton.setText("Sign-out");
+                    break;
                 } else {
                     Date d = new Date();
-                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM.dd");
 
                     signIn = sdf.format(d);
                     signOut = "N/A";
                     newTime = "N/A";
                     signButton.setText("Sign-in");
+
+                    totalPoints = Double.toString(Double.parseDouble(totalPoints) + 1);
                 }
 
                 TextView nameText = (TextView) popupView.findViewById(R.id.name);
                 TextView idText = (TextView) popupView.findViewById(R.id.studentnum);
                 TextView signInText = (TextView) popupView.findViewById(R.id.signintime);
-                TextView signOutText = (TextView) popupView.findViewById(R.id.signouttime);
-                TextView newTimeText = (TextView) popupView.findViewById(R.id.newtime);
-                TextView totalTimeText = (TextView) popupView.findViewById(R.id.totaltime);
+                TextView totalPointsText = (TextView) popupView.findViewById(R.id.totalpoints);
 
                 nameText.setText(name);
                 idText.setText(pinInput);
                 signInText.setText("Sign-in:\n" + signIn);
-                signOutText.setText("Sign-out:\n" + signOut);
-                newTimeText.setText("New Time:\n" + newTime);
-                totalTimeText.setText("Total:\n" + totalTime);
+                totalPointsText.setText("Total:\n" + totalPoints);
 
                 cancelButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -189,13 +188,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                final String finalTotalTime = totalTime;
 
-                final String newHours = newTime;
+                String finalTotalPoints = totalPoints;
                 signButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        boolean newSignIn = !signedIn;
-                        addItemToSheet(pinInput, lastName, firstName, Boolean.toString(newSignIn), signIn, signOut, newHours, finalTotalTime);
+                        boolean newSignIn = true;
+                        addItemToSheet(pinInput, lastName, firstName, Boolean.toString(newSignIn), signIn, finalTotalPoints);
                         popupWindow.dismiss();
                     }
                 });
@@ -210,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (!found) {
-            Toast.makeText(MainActivity.this, "Incorrect Pin", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Incorrect Pin/", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -289,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         listStudentLast = new ArrayList<String>();
         listSignedIn = new ArrayList<String>();
         listRecentSignIn = new ArrayList<String>();
-        listTotalTime = new ArrayList<String>();
+        listTotalPoints = new ArrayList<String>();
 
         final ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "Getting Data", "Please Wait...");
 
@@ -308,15 +306,15 @@ public class MainActivity extends AppCompatActivity {
                         strStudentLast = json.getString(0);
                         strStudentFirst = json.getString(1);
                         strSignedIn = json.getString(3);
-                        strRecentSignIn = json.getString(4);
-                        strTotalTime = json.getString(8);
+                        strRecentSignIn = json.getString(5);
+                        strTotalPoints = json.getString(4);
 
                         listStudentNumbers.add(strStudentNumber);
                         listStudentFirst.add(strStudentFirst);
                         listStudentLast.add(strStudentLast);
                         listSignedIn.add(strSignedIn);
                         listRecentSignIn.add(strRecentSignIn);
-                        listTotalTime.add(strTotalTime);
+                        listTotalPoints.add(strTotalPoints);
 
                     } catch (Exception e) {
                     }
@@ -336,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
         queue.add(jsonObjectRequest);
     }
 
-    private void addItemToSheet(String id, String studentLast, String studentFirst, String newSignIn, String signInTime, String signOutTime, String recentHours, String newTime) {
+    private void addItemToSheet(String id, String studentLast, String studentFirst, String newSignIn, String recentHours, String totalPoints) {
 
         final String ACTION = Boolean.parseBoolean(newSignIn) ? "SIGNIN" : "SIGNOUT";
 
@@ -346,10 +344,8 @@ public class MainActivity extends AppCompatActivity {
         final String ID = id;
         final String STUDENTFIRST = studentFirst;
         final String STUDENTLAST = studentLast;
-        final String SIGNINTIME = signInTime;
-        final String SIGNOUTTIME = signOutTime;
-        final String RECENTHOURS = recentHours;
-        final String NEWTIME = newTime;
+        final String TOTALPOINTS = totalPoints;
+        final String RECENTSIGNIN = recentHours;
 
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
 
@@ -376,10 +372,8 @@ public class MainActivity extends AppCompatActivity {
                 params.put("ID", ID);
                 params.put("STUDENTFIRST", STUDENTFIRST);
                 params.put("STUDENTLAST", STUDENTLAST);
-                params.put("SIGNINTIME", SIGNINTIME);
-                params.put("SIGNOUTTIME", SIGNOUTTIME);
-                params.put("RECENTHOURS", RECENTHOURS);
-                params.put("NEWTIME", NEWTIME);
+                params.put("TOTALPOINTS", TOTALPOINTS);
+                params.put("RECENTSIGNIN", RECENTSIGNIN);
 
                 return params;
             }
